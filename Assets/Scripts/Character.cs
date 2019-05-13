@@ -6,13 +6,13 @@ using UnityEngine;
 public class Character : MonoBehaviour
 {
     public string name;
-    public PhysicalCharactristcs pc;
+    public PhysicalCharactristics pc;
     public Data Data; // at this point read it from json 
  
 
     public Character()
     {
-        pc = new PhysicalCharactristcs();
+        pc = new PhysicalCharactristics();
         Debug.Log(pc.eyeColor);
 
     }
