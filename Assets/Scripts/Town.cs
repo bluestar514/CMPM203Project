@@ -10,14 +10,19 @@ public class Town : MonoBehaviour
     //// Start is called before the first frame update
     /// 
     /// 
-    Character test; 
+    Character test;
+    public List<Character> residents;
      void Start()
     {
-        test = new Character();
-        if (test.pc.hasMark)
-        {
-            Debug.Log("the char has a scar");
-        }
+        TownGenerator townGenerator = new TownGenerator();
+        residents = townGenerator.GenerateResidents(10, 2);
+
+
+        //test = new Character();
+        //if (test.pc.hasMark)
+        //{
+        //    Debug.Log("the char has a scar");
+        //}
 
         //for (int i = 0; i <= numberOfNpcs; i++)
         //{
