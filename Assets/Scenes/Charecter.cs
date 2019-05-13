@@ -13,6 +13,7 @@ public class Charecter : MonoBehaviour
     public Charecter()
     {
         pc = new PhysicalCharectristcs();
+        Debug.Log(pc.eyeColor);
 
     }
     // Start is called before the first frame update
@@ -21,8 +22,8 @@ public class Charecter : MonoBehaviour
         //Data = FindObjectOfType<Data>();
         //pc = Data.returnPhysicalCharectristcs();
 
-        pc = new PhysicalCharectristcs();
-        Debug.Log(pc.eyeColor);
+        //pc = new PhysicalCharectristcs();
+
 
     }
 
