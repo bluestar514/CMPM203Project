@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //acts as a collector for all data types related to a charcter 
-public class Character : MonoBehaviour
+//[System.Serializable]
+public class Character
 {
     public string name;
     public PhysicalCharactristics pc;

@@ -7,8 +7,7 @@ using UnityEngine;
 //for now it is not in json - will transfter later once 
 //faster for me 
 
-
-public class Data : MonoBehaviour 
+public class Data 
 {
 
     public int numberOfNpcs = 10;
