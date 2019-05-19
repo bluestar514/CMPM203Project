@@ -7,16 +7,17 @@ public class Town : MonoBehaviour
 
     //public int numberOfNpcs = 10;
     //public List<Charecter> charecters;
-    //// Start is called before the first frame update
-    /// 
-    /// 
+
     Character test;
     public List<Character> residents;
      void Start()
     {
         TownGenerator townGenerator = new TownGenerator();
         residents = townGenerator.GenerateResidents(10, 2);
-
+        foreach( Character c in residents)
+        {
+            //Debug.Log(c.name);
+        }
 
         //test = new Character();
         //if (test.pc.hasMark)

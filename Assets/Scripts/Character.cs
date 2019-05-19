@@ -38,7 +38,7 @@ public class Character
 
     public void AddRelation(Character otherCharacter, string relationship)
     {
-        relations.Add(new Relation(otherCharacter, relationship));
+        relations.Add(new Relation(otherCharacter, relationship, relationship=="mother"|| relationship=="father"?true:false));
     }
 
     public void printAcharecter() //this will return it later instead of print it or write it to json 
@@ -55,13 +55,6 @@ public class Character
 
     }
 
-    //public Charecter() {
-    //    if (pc != null)
-    //    {
-    //        pc = Data.returnPhysicalCharectristcs();
-    //    }
-    //    name = Data.returnAname();
-    //}
 }
 
 [System.Serializable]
@@ -70,11 +63,13 @@ public class Relation {
     public Character otherCharacter;
     public string name;
     public string relationship;
+   public bool isChild = false;
 
-    public Relation(Character otherCharacter, string relationship)
+    public Relation(Character otherCharacter, string relationship, bool isitaCHILD)
     {
         this.otherCharacter = otherCharacter;
         name = otherCharacter.data.name;
         this.relationship = relationship;
+        this.isChild = isitaCHILD;
     }
 }

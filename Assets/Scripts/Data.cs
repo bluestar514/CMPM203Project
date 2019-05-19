@@ -70,6 +70,7 @@ public class PhysicalCharactristics
     public string hairColor;
     public string eyeColor;
     public float height, weight;
+    public int age;
 
     //might get alot related this way - mayeb another approuch --- 
     public PhysicalCharactristics()
@@ -83,6 +84,7 @@ public class PhysicalCharactristics
         this.eyeColor = eyeColor;
         this.height = height;
         this.weight = weight;
+        this.age = 100;
     }
 
     public void GenerateRandomPhysicalCharacteristics()
@@ -90,13 +92,15 @@ public class PhysicalCharactristics
         
         hairColor = listOfHairColors[Random.Range(0, listOfHairColors.Count)];
         eyeColor = listOfEyeColors[Random.Range(0, listOfEyeColors.Count)];
-        height = Random.Range(4.0f, 10.0f);
+        height = Random.Range(5.0f, 10.0f);
         weight = Random.Range(50f, 300);
         hasMark = Random.value > 0.5f;
+        //parents 
+        age = Random.Range(30, 50);//for now 
     }
 
-    public void GenerateFromExisting(PhysicalCharactristics inputA, PhysicalCharactristics inputB)
-    {
+    public void GenerateFromExisting(PhysicalCharactristics inputA, PhysicalCharactristics inputB,int order)
+    {//for child 
         //hair: 
         int hereditaryWeight = listOfHairColors.Count;
         listOfHairColors.AddRange(Enumerable.Repeat(inputA.hairColor, hereditaryWeight));
@@ -107,9 +111,25 @@ public class PhysicalCharactristics
         listOfEyeColors.AddRange(Enumerable.Repeat(inputA.eyeColor, hereditaryWeight));
         listOfEyeColors.AddRange(Enumerable.Repeat(inputB.eyeColor, hereditaryWeight));
 
-        GenerateRandomPhysicalCharacteristics();
+        GenerateChildPhysicalCharacteristics( inputA,  inputB,  order);
     }
+
+    public void GenerateChildPhysicalCharacteristics(PhysicalCharactristics inputA, PhysicalCharactristics inputB,int order)
+    {
+        hairColor = listOfHairColors[Random.Range(0, listOfHairColors.Count)];
+        eyeColor = listOfEyeColors[Random.Range(0, listOfEyeColors.Count)];
+        weight = Random.Range(50f, 200);
+        hasMark = Random.value > 0.25f;
+        height = Random.Range(4, Mathf.Min(inputA.height, inputB.height));
+        age = Random.Range(7, Mathf.Min(inputA.age, inputB.age));
+    //check notes ---- below -- *A can go here if we need specs 
+
+
+    }
+
 }
+
+
 
 public class Classes
 {
@@ -125,3 +145,21 @@ public class Classes
 
 
 }
+
+//------ notes ---*A can go here if we need specs 
+//option to tweak if needed be - little buggy but works 
+//if(order == 1)//first child
+//{
+//    height = Mathf.Min(inputA.height, inputB.height)-1.5f;
+//    age = Random.Range(18, Mathf.Min(inputA.age, inputB.age)-10); 
+//}
+//if (order == 2)//first child
+//{
+//    height = Mathf.Min(inputA.height, inputB.height) - 2f;
+//    age = Random.Range(12, Mathf.Min(inputA.age, inputB.age) - 15);
+//}
+//else
+//{
+//    height = Random.Range(4, Mathf.Min(inputA.height, inputB.height))-3f;
+//    age = Random.Range(7, Mathf.Min(inputA.age, inputB.age) -20 );
+//}
