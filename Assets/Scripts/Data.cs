@@ -133,7 +133,7 @@ public class PhysicalCharactristics
 
 public class Classes
 {
-    List<string> titles = new List<string> { "Rouge", "Mage", "Hunter", "Witch", "Null" };
+    List<string> titles = new List<string> { "Rouge", "Mage", "Hunter", "Witch", "Other" };
     //list traits for each one? 
     // link possible traits with classess and if statments in structures ---- -
     struct traits
@@ -143,6 +143,22 @@ public class Classes
         string affeliation;
     }
 
+
+}
+[System.Serializable]
+public class Family
+{
+    public List<Character> members = new List<Character>();
+    public int familyID = 0;
+    public Family()
+    {
+
+    }
+    public Family(List<Character> _familyMembers,int _familyID)
+    {
+        this.members = _familyMembers;
+        this.familyID = _familyID;
+    }
 
 }
 

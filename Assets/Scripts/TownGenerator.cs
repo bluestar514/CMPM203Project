@@ -4,6 +4,27 @@ using UnityEngine;
 
 public class TownGenerator 
 {
+    //this method instead adds a layer of families on top of charecters to seperate them ( same as resedints, kept both incase of error ) 
+    public List<Family> GenerateFamalies(int numberOfResidents, int numberOfFamilies)
+    {
+        List<Family> families = new List<Family>();
+        int familyIDCounter = 0; /// was going to use numgenfamalies but it does not seem to update --- weird thought it did  
+        int numGeneratedResidents = 0;
+        int numGeneratedFamilies = 0;//fixes issue with counter for somereason
+        for (numGeneratedFamilies = 0; numGeneratedFamilies < numberOfFamilies; numberOfFamilies++)
+        { //do this till we have 2 families
+            familyIDCounter++;
+            int numberOfMembers = Random.Range(1, Mathf.Min(8, numberOfResidents - numGeneratedResidents));//between, 1 and ( 8 and 0 initially  )- small family 
+            numGeneratedResidents += numberOfMembers; //0 -> 8 
+            Family aFamily = new Family(GenerateFamily(numberOfMembers), familyIDCounter);
+            families.Add(aFamily);
+            if (numGeneratedResidents >= numberOfResidents) break; //8 >= 10 ( if we do not exceed number of resefits - otherwise increse family count 
+        }
+
+     
+        return families;
+
+    }
 
     public List<Character> GenerateResidents(int numberOfResidents, int numberOfFamilies)
     {//10,2
@@ -24,7 +45,7 @@ public class TownGenerator
     }
 
     public List<Character> GenerateFamily(int numMembers)
-    {
+    {//gives back one family 
         List<Character> members = new List<Character>();
         List<Character> children = new List<Character>(); ;
 
@@ -107,14 +128,17 @@ public class TownGenerator
 ///     for(int i =0; i < members.Count
 /// 
 //; i++)
-    //{
-    //    for(int j =0; j<members[i].relations.Count; j++)
-    //    {
-    //        if (members[i].relations[j].relationship!= "wife" || members[i].relations[j].relationship != "husband")//am i a child and nota parent 
-    //        {
-    //            members[i].AddRelation(members[i], "sibiling");
-    //        }
-    //    }
+//{
+//    for(int j =0; j<members[i].relations.Count; j++)
+//    {
+//        if (members[i].relations[j].relationship!= "wife" || members[i].relations[j].relationship != "husband")//am i a child and nota parent 
+//        {
+//            members[i].AddRelation(members[i], "sibiling");
+//        }
+//    }
 
 
-    //}
+//}
+
+
+/// was in first method ---   but used temp ver instead ->  //families[numGeneratedFamilies].members = GenerateFamily(numberOfMembers);//works but above is cleaner 
