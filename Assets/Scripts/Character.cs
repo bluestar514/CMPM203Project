@@ -40,6 +40,17 @@ public class Character
     {
         relations.Add(new Relation(otherCharacter, relationship, relationship=="mother"|| relationship=="father"?true:false));
     }
+    public void AddRelation(Character otherCharacter, string relationship, int thisFamId) 
+    {
+        relations.Add(new Relation(otherCharacter, relationship));
+    }
+
+
+    //public void AddRelation(Character thischar, Character otherCharacter, string relationship, Family fam)
+    //{
+    //    relations.Add(new Relation(otherCharacter, relationship, relationship == "mother" || relationship == "father" ? true : false));
+
+    //}
 
     public void printAcharecter() //this will return it later instead of print it or write it to json 
     {
@@ -71,5 +82,12 @@ public class Relation {
         name = otherCharacter.data.name;
         this.relationship = relationship;
         this.isChild = isitaCHILD;
+    }
+    public Relation(Character otherCharacter, string relationship)
+    {
+        this.otherCharacter = otherCharacter;
+        name = otherCharacter.data.name;
+        this.relationship = relationship;
+       
     }
 }

@@ -26,6 +26,58 @@ public class TownGenerator
 
     }
 
+    public void AddRandomRelations(List<Family> family)
+    {
+          for (int i = 0; i<=10; i++)
+        {
+            int selectedFamilyA = Random.Range(0, family.Count);
+            int selectedFamilyB = Random.Range(0, family.Count);
+            if (family[selectedFamilyA].familyID != family[selectedFamilyB].familyID)
+            {// only add a relationship if it is outside the family (  another family ) 
+                Character a = family[selectedFamilyA].members[Random.Range(0, family[selectedFamilyA].members.Count)];
+                Character b = family[selectedFamilyB].members[Random.Range(0, family[selectedFamilyB].members.Count)];
+                addRelationships(a, b, chooseArandomRelation());
+            }
+        }  }
+
+    string chooseArandomRelation()
+    {
+        int x = Random.Range(0, 7);
+        string relationship;
+        switch (x)
+        {
+            case 0:
+                relationship = "best buds";
+                break;
+            case 1:
+                relationship = "admirer";
+                break;
+            case 2:
+                relationship = "mortal enemy";
+                break;
+            case 3:
+                relationship = "Mentor";
+                break;
+            case 4:
+                relationship = "Acquaintance";
+                break;
+            case 5:
+                relationship = "envious";
+                break;
+            default:
+                relationship = "Friend";
+                break;
+
+        }
+        Debug.Log("added " + relationship);
+        return relationship;
+    }
+
+    void addRelationships(Character a, Character b, string relationship) //i think at somepoint we need to remove strings and add enums for types 
+    {
+        a.AddRelation(b, relationship);
+    }
+
     public List<Character> GenerateResidents(int numberOfResidents, int numberOfFamilies)
     {//10,2
         List<Character> residents = new List<Character>();
@@ -43,6 +95,7 @@ public class TownGenerator
         return residents;
         
     }
+
 
     public List<Character> GenerateFamily(int numMembers)
     {//gives back one family 

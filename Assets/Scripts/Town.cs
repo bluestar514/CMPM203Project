@@ -14,9 +14,10 @@ public class Town : MonoBehaviour
      void Start()
     {
         TownGenerator townGenerator = new TownGenerator();
-        famalies = townGenerator.GenerateFamalies(20, 4);
+        famalies = townGenerator.GenerateFamalies(20, 4);//exceeds family count tho
+        townGenerator.AddRandomRelations(famalies);
         //residents = townGenerator.GenerateResidents(10, 2);//copying this method for family structure for now commenting here 
- 
+
     }
 
     //// Update is called once per frame
