@@ -132,48 +132,6 @@ public class PhysicalCharactristics
 
 
 [System.Serializable]
-public class Profession
-{
-    //List<string> titles = new List<string> { "Rouge", "Mage", "Hunter", "Witch", "Other" };
-    //list traits for each one? 
-    // link possible traits with classess and if statments in structures ---- -
-    public string title;
-    protected List<Trait> potentialTraits = new List<Trait>();
-    public List<Trait> chosenTraits = new List<Trait>();
-
-    public static Profession PickProfession() {
-        return new MageProfession();
-    }
-
-}
-
-[System.Serializable]
-public class MageProfession: Profession
-{
-    public MageProfession()
-    {
-        title = "Mage";
-        potentialTraits = new List<Trait> { new Trait("Chosen By Mana", "This person's spells cost 10% less mana to cast."),
-                                            new Trait("Bibliophile", "This person is more likely to be in found in the library than anywhere else.")};
-        chosenTraits.Add(potentialTraits[Mathf.RoundToInt(Random.Range(0, potentialTraits.Count))]);
-    }
-}
-
-
-[System.Serializable]
-public class Trait
-{
-    public string name;
-    public string description;
-
-    public Trait(string Name, string Desc)
-    {
-        name = Name;
-        description = Desc;
-    }
-}
-
-[System.Serializable]
 public class Family
 {
     public List<Character> members = new List<Character>();
