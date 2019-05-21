@@ -17,25 +17,17 @@ public class Character
         relations = new List<Relation>();
         pc = new PhysicalCharactristics();
         data = new Data();
-        profession = Profession.PickProfession();
-
-        //Debug.Log(pc.eyeColor);
-
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        //Data = FindObjectOfType<Data>();
-        //pc = Data.returnPhysicalCharectristcs();
-
-        //pc = new PhysicalCharectristcs();
-
 
     }
 
-    // Update is called once per frame
-    void Update()
+    public void AssignProfessionToCharacter()
     {
+        int ageOfAdulthood = 16;
+        if (pc.age < ageOfAdulthood) {
+            profession = Profession.PickChildProfession();
+        } else {
+            profession = Profession.PickAdventurerProfession();
+        }
         
     }
 
@@ -48,12 +40,6 @@ public class Character
         relations.Add(new Relation(otherCharacter, relationship));
     }
 
-
-    //public void AddRelation(Character thischar, Character otherCharacter, string relationship, Family fam)
-    //{
-    //    relations.Add(new Relation(otherCharacter, relationship, relationship == "mother" || relationship == "father" ? true : false));
-
-    //}
 
     public void printAcharecter() //this will return it later instead of print it or write it to json 
     {

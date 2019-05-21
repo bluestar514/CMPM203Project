@@ -160,6 +160,28 @@ public class TownGenerator
 
         return character;
     }
+
+    public void AssignProfessions(List<Family> families)
+    {
+        AssignProfessions(FamilyToCharacterList(families));
+    }
+
+    public void AssignProfessions(List<Character> residents)
+    {
+        foreach(Character resident in residents) {
+            resident.AssignProfessionToCharacter();
+        }
+    }
+
+    public List<Character> FamilyToCharacterList(List<Family> families)
+    {
+        List<Character> residents = new List<Character>();
+        foreach(Family family in families) {
+            residents.AddRange(family.members);
+        }
+
+        return residents;
+    }
 }
 
 ////returns members of a family 
