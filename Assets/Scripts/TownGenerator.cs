@@ -5,20 +5,20 @@ using UnityEngine;
 public class TownGenerator 
 {
     //this method instead adds a layer of families on top of charecters to seperate them ( same as resedints, kept both incase of error ) 
-    public List<Family> GenerateFamalies(int numberOfResidents, int numberOfFamilies)
+    public List<Family> GenerateFamalies(int maxNumberOfResidents, int numberOfFamilies, int maxFamilySize=8)
     {
         List<Family> families = new List<Family>();
         int familyIDCounter = 0; /// was going to use numgenfamalies but it does not seem to update --- weird thought it did  
         int numGeneratedResidents = 0;
         int numGeneratedFamilies = 0;//fixes issue with counter for somereason
-        for (numGeneratedFamilies = 0; numGeneratedFamilies < numberOfFamilies; numberOfFamilies++)
+        for (numGeneratedFamilies = 0; numGeneratedFamilies < numberOfFamilies; numGeneratedFamilies++)
         { //do this till we have 2 families
             familyIDCounter++;
-            int numberOfMembers = Random.Range(1, Mathf.Min(8, numberOfResidents - numGeneratedResidents));//between, 1 and ( 8 and 0 initially  )- small family 
+            int numberOfMembers = Random.Range(1, Mathf.Min(maxFamilySize, maxNumberOfResidents - numGeneratedResidents));//between, 1 and ( 8 and 0 initially  )- small family 
             numGeneratedResidents += numberOfMembers; //0 -> 8 
             Family aFamily = new Family(GenerateFamily(numberOfMembers), familyIDCounter);
             families.Add(aFamily);
-            if (numGeneratedResidents >= numberOfResidents) break; //8 >= 10 ( if we do not exceed number of resefits - otherwise increse family count 
+            if (numGeneratedResidents >= maxNumberOfResidents) break; //8 >= 10 ( if we do not exceed number of resefits - otherwise increse family count 
         }
 
      
@@ -56,16 +56,16 @@ public class TownGenerator
                 relationship = "mortal enemy";
                 break;
             case 3:
-                relationship = "Mentor";
+                relationship = "mentor";
                 break;
             case 4:
-                relationship = "Acquaintance";
+                relationship = "acquaintance";
                 break;
             case 5:
                 relationship = "envious";
                 break;
             default:
-                relationship = "Friend";
+                relationship = "friend";
                 break;
 
         }
@@ -169,8 +169,39 @@ public class TownGenerator
     public void AssignProfessions(List<Character> residents)
     {
         foreach(Character resident in residents) {
-            resident.AssignProfessionToCharacter();
+            if(resident.profession == null) AssignProfessionTo(resident);
         }
+    }
+
+    public void AssignProfessionTo(Character resident)
+    {
+        int ageOfAdulthood = 16;
+        if (resident.pc.age < ageOfAdulthood) {
+            resident.profession = Profession.PickChildProfession();
+        } else {
+            Profession motherProfession = GetRelationProfession(resident, "mother");
+            Profession fatherProfession = GetRelationProfession(resident, "father");
+            if (motherProfession != null || fatherProfession != null) {
+                resident.profession = Profession.PickProfessionBasedOnParents(motherProfession, fatherProfession);
+            } else {
+                resident.profession = Profession.PickAdventurerProfession();
+            } 
+        }
+    }
+
+    Profession GetRelationProfession(Character subject, string relationship)
+    {
+        Character relation = subject.FindRelation(relationship);
+
+        if(relation == null) {
+            return null;
+        }
+
+        if (relation.profession == null) {
+            AssignProfessionTo(relation);
+        }
+
+        return relation.profession;
     }
 
     public List<Character> FamilyToCharacterList(List<Family> families)

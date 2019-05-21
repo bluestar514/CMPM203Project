@@ -19,16 +19,11 @@ public class Town : MonoBehaviour
         townGenerator.AddRandomRelations(famalies);
         townGenerator.AssignProfessions(famalies);
         //residents = townGenerator.GenerateResidents(10, 2);//copying this method for family structure for now commenting here 
-        string json = JsonUtility.ToJson(famalies[0].members[0].name);
+        string json = JsonUtility.ToJson(famalies[0]);
         Debug.Log(json);
         File.WriteAllText(Application.dataPath + "/save.txt", json);
     }
 
-    //// Update is called once per frame
-    //void Update()
-    //{
-
-    //}
 }
 
 //in progress ---- 

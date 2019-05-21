@@ -17,19 +17,10 @@ public class Character
         relations = new List<Relation>();
         pc = new PhysicalCharactristics();
         data = new Data();
-
+        profession = null;
     }
 
-    public void AssignProfessionToCharacter()
-    {
-        int ageOfAdulthood = 16;
-        if (pc.age < ageOfAdulthood) {
-            profession = Profession.PickChildProfession();
-        } else {
-            profession = Profession.PickAdventurerProfession();
-        }
-        
-    }
+    
 
     public void AddRelation(Character otherCharacter, string relationship)
     {
@@ -53,6 +44,17 @@ public class Character
         //will return it here and link it 
         // need to store this somehow --- and then check if anyone in the list has the sam ehair color? refine relationship 
 
+    }
+
+    public Character FindRelation(string relationship)
+    {
+        foreach(Relation relation in relations) {
+            if(relation.relationship == relationship) {
+                return relation.otherCharacter;
+            }
+        }
+
+        return null;
     }
 
 }

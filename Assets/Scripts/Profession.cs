@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
@@ -12,7 +13,7 @@ public class Profession {
     {
         Profession profession;
      
-        switch(Random.Range(0, 4)) {
+        switch(Random.Range(0, 8)) {
             case 0:
                 profession = new MageProfession();
                 break;
@@ -23,8 +24,10 @@ public class Profession {
                 profession = new KnightProfession();
                 break;
             case 3:
-            default:
                 profession = new RogueProfession();
+                break;
+            default:
+                profession = new VillagerProfession();
                 break;
         }
         
@@ -41,6 +44,20 @@ public class Profession {
     public static Profession PickChildProfession()
     {
         return new ChildProfession();
+    }
+
+    public static Profession PickProfessionBasedOnParents(Profession professionA, Profession professionB)
+    {
+        List<Profession> potentialProfessions = new List<Profession> { new MageProfession(), new ShamanProfession(), new KnightProfession(), new RogueProfession(), new VillagerProfession() };
+        int hereditaryWeight = potentialProfessions.Count;
+        if (professionA != null) {
+            potentialProfessions.AddRange(Enumerable.Repeat(professionA, hereditaryWeight));
+        }
+        if (professionB != null) {
+            potentialProfessions.AddRange(Enumerable.Repeat(professionB, hereditaryWeight));
+        }
+
+        return potentialProfessions[Random.Range(0, potentialProfessions.Count)];
     }
 
     public void ChooseProfessionTraits()
