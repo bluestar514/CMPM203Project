@@ -10,12 +10,15 @@ public class Character
     public PhysicalCharactristics pc;
     public Data data; // at this point read it from json 
     public List<Relation> relations;
+    public Profession profession;
 
     public Character()
     {
         relations = new List<Relation>();
         pc = new PhysicalCharactristics();
         data = new Data();
+        profession = Profession.PickProfession();
+
         //Debug.Log(pc.eyeColor);
 
     }
