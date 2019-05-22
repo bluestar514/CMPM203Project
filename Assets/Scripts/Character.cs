@@ -11,6 +11,7 @@ public class Character
     public Data data; // at this point read it from json 
     public List<Relation> relations;
     public Profession profession;
+    public List<string> memoryLog;
 
     public Character()
     {
@@ -57,6 +58,22 @@ public class Character
         return null;
     }
 
+    public Relation FindRelationBetween(Character otherCharacter)
+    {
+        foreach (Relation relation in relations) {
+            if (relation.otherCharacter == otherCharacter) {
+                return relation;
+            }
+        }
+
+        return null;
+    }
+
+    public void AddMemory(string memory)
+    {
+        memoryLog.Add(memory);
+    }
+
 }
 
 [System.Serializable]
@@ -80,5 +97,39 @@ public class Relation {
         name = otherCharacter.data.name;
         this.relationship = relationship;
        
+    }
+
+    public static bool AreARelation(Character a, Character b, List<string> relationList)
+    {
+        
+        Relation relation = null;
+        foreach (string potential in relationList) {
+            relation = a.FindRelationBetween(b);
+            if (relation != null) {
+                return true;
+            }
+        }
+
+        return false;
+
+    }
+
+    public static bool AreFamily(Character a, Character b)
+    {
+        List<string> familialRelations = new List<string> { "mother", "father", "sibling", "husband", "wife" };
+        return AreARelation(a, b, familialRelations);
+
+    }
+
+    public static bool AreFriendly(Character a, Character b)
+    {
+        List<string> friendlyRelations = new List<string> { "best buds", "friend" };
+        return AreARelation(a, b, friendlyRelations);
+    }
+
+    public static bool AreEnemy(Character a, Character b)
+    {
+        List<string> enemyRelations = new List<string> { "mortal enemy" };
+        return AreARelation(a, b, enemyRelations);
     }
 }
