@@ -12,12 +12,12 @@ public class Town : MonoBehaviour
     Character test;
     List<Character> allCharecters = new List<Character>();
     int sizeOfTiles= 10;
-    Map map;     //public List<Character> residents;
+    public Map map;     //public List<Character> residents;
     public List<Family> famalies; 
      void Start()
     {
         TownGenerator townGenerator = new TownGenerator();
-        famalies = townGenerator.GenerateFamalies(20, 4);//off by 1 or -1 
+        famalies = townGenerator.GenerateFamalies(100,25);//off by 1 or -1 
         townGenerator.AddRandomRelations(famalies);
         townGenerator.AssignProfessions(famalies);
         //residents = townGenerator.GenerateResidents(10, 2);//copying this method for family structure for now commenting here 
@@ -25,25 +25,25 @@ public class Town : MonoBehaviour
         File.WriteAllText(Application.dataPath + "/save.txt", json);
         allCharecters = combineAllCharecters(famalies);
 
-        map = new Map(12);
+        map = new Map(15);
         map.PopullateAllTiles(allCharecters);
-        //for debugging only -- works 
-        foreach (Tile t in map.tiles){
-            Debug.Log("HI this map has room: "+t.roomType
-            +" the ID is : "+ t.tileID + " : ");
-            foreach(Character c in t.populatedNPCs)
-            {
-                Debug.Log(t.tileID+"# has npcs:"+c.name);
-                //foreach(Tile x in t.connectedTiles)
-                //{
-                //    Debug.Log(x.tileID + "# is conntected to " +x.roomType);
+       
+
+         //for debugging only -- works 
+        //foreach (Tile t in map.tiles){
+        //    Debug.Log("HI this map has room: "+t.roomType
+        //    +" the ID is : "+ t.tileID + " : ");
+        //    foreach(Character c in t.populatedNPCs)
+        //    {
+        //        Debug.Log(t.tileID+"# has npcs:"+c.name);
+        //        //foreach(Tile x in t.connectedTiles)
+        //        //{
+        //        //    Debug.Log(x.tileID + "# is conntected to " +x.roomType);
 
 
-                //}
-            }
-
-
-        }
+        //        //}
+        //    }
+        //}
 
     }
     //pre step so we can randomly assign them - better than looping later on, maybe moove family ID to each charecteR? 
@@ -64,7 +64,7 @@ public class Town : MonoBehaviour
 }
 
 //in progress ---- 
-[SerializeField]
+[System.Serializable]
 public class Map //kinda like a wrapper 
 {
     public List<Tile> tiles = new List<Tile>();
@@ -97,10 +97,13 @@ public class Map //kinda like a wrapper
             }
 
         }
-        //ConnectTiles(generatedTiles);
+        //uncomment this to connect tiles - bad  for now ----  would have to fillde with it to inlcude sizes with just 12 tiles we barly have enupogh npcs / tile types
+       // it looks like it populates npcs in the not connected ones 
+
+         //ConnectTiles(generatedTiles);
         return generatedTiles; //holds all types and tile map
     }
-
+    //this is reallyt baddddly done --
     private void ConnectTiles(List<Tile> generatedTiles)
     {
         List<Tile> temporaryTileList = generatedTiles;
@@ -135,9 +138,11 @@ public class Map //kinda like a wrapper
 
     }
 
-    internal void PopullateAllTiles(List<Character> cs)
+    internal void PopullateAllTiles(List<Character> _cs)
     {
-       point:
+
+        List<Character> cs = _cs;
+    point:
         for (int i =0; i < tiles.Count; i++)
         {
             int index = UnityEngine.Random.Range(0, cs.Count);
@@ -170,6 +175,7 @@ public class Map //kinda like a wrapper
     }
      
 }
+[System.Serializable]
 
 public class Tile
 {
@@ -184,7 +190,7 @@ public class Tile
 }
     public roomTypes roomType;
 
-    List<string> discriptionsPerRoom = new List<string>();
+    public List<string> discriptionsPerRoom = new List<string>();
     public List<Character> populatedNPCs = new List<Character>();
     public List<Character> populatedPatry = new List<Character>();
     public List<Tile> connectedTiles = new List<Tile>();
