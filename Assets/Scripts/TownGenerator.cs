@@ -69,7 +69,7 @@ public class TownGenerator
                 break;
 
         }
-        Debug.Log("added " + relationship);
+        //Debug.Log("added " + relationship);
         return relationship;
     }
 
