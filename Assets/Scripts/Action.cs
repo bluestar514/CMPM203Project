@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Action //social
+public class Action
 {
     public string name;
     public float baseDesire;
@@ -46,6 +46,14 @@ public class Action //social
         }
         return null;
     }
+
+    protected Tile FindConnection(string target, Tile location)
+    {
+        foreach(Tile loc in location.connectedTiles) {
+            if (target == loc.tileID.ToString()) return loc;
+        }
+        return null;
+    }
 }
 
 
@@ -70,7 +78,7 @@ public class ActionSocial : Action {
 
         Character targetCharacter = FindInRoom(target, location);
 
-        if (targetCharacter == null) return 0; //Action is not possible
+        if (targetCharacter == null || targetCharacter == actor) return 0; //Action is not possible
 
         if (Relation.AreFamily(actor, targetCharacter)) currentDesire += (currentDesire * familyModifier);
         if (Relation.AreFriendly(actor, targetCharacter)) currentDesire += (currentDesire * friendlyModifier);
@@ -99,15 +107,19 @@ public class ActionMovement: Action {
     {
         base.Enact(actor, location, target);
 
-        //something that moves a character to target location
+        Tile newLocation = FindConnection(target, location);
+
+        actor.MoveTo(newLocation, true);
     }
 
     public override float Desire(Character actor, Tile location, string target)
     {
-        //something that checks if the locations are connected and the path is traversable
+        Tile newLocation = FindConnection(target, location);
+        if (newLocation == null) return 0;
+
         //something that sees how much they might want to do that based on their traits
 
-        return 0; //replace later
+        return baseDesire;
     }
     public override void FormMemory(Character actor, Tile location, string target)
     {
