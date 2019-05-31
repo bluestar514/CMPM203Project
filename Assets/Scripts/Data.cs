@@ -4,57 +4,18 @@ using System.Linq;
 using UnityEngine;
 
 
-
-//for now it is not in json - will transfter later once 
-//faster for me 
-
-[System.Serializable]
-public class Data 
+public class NameGenerator 
 {
 
     //public int numberOfNpcs = 10;
     //public List<string> listOfGeneratedNames = new List<string>();
-    List<string> partOne = new List<string> { "Mar", "Anna", "Hey", "Ase", "Ro", "Cla", "Zen", "Ni", "Lin", "Re" };
-    List<string> partTwo = new List<string> { "ly", "nama", "meer", "nia", "Ro", "ra", "soar", "ght", "tera", "ey", "oul", "ra","beth" };
+    static List<string> partOne = new List<string> { "Mar", "Anna", "Hey", "Ase", "Ro", "Cla", "Zen", "Ni", "Lin", "Re" };
+    static List<string> partTwo = new List<string> { "ly", "nama", "meer", "nia", "Ro", "ra", "soar", "ght", "tera", "ey", "oul", "ra","beth" };
 
-    public string name;
-
-    // Start is called before the first frame update
-    void Start()
+    public static string GenerateName()
     {
-        //for(int i =0; i <= numberOfNpcs; i++)
-        //{
-        //    listOfGeneratedNames.Add(
-        //            partOne[Random.Range(0, partOne.Count)] + partTwo[Random.Range(0, partTwo.Count)]);
-        //}
-        //printAcharecter();
-        //printAcharecter();
-        //printAcharecter();
-
+        return partOne[Random.Range(0, partOne.Count)] + partTwo[Random.Range(0, partTwo.Count)];
     }
-
-    public void GenerateName()
-    {
-        name = partOne[Random.Range(0, partOne.Count)] + partTwo[Random.Range(0, partTwo.Count)];
-    }
-
-    public PhysicalCharactristics returnPhysicalCharectristcs()
-    {
-        //return a random phisical chartrictic 
-        PhysicalCharactristics p = new PhysicalCharactristics();
-        return p;
-    }
-
-    //public string returnAname()
-    //{
-    //    //return a random phisical chartrictic 
-    //   return  listOfGeneratedNames[Random.Range(0, listOfGeneratedNames.Count - 1)];
-      
-    //}
-
-
-
-
 
 }
 

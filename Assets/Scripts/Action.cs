@@ -7,11 +7,15 @@ public class Action
 {
     public string name;
     public float baseDesire;
+    public List<TraitModifier> traitModifiers;
 
-    public Action(string name, float baseDesire=.1f)
+
+    public Action(string name, float baseDesire = .1f, List<TraitModifier> traitModifiers = null)
     {
         this.name = name;
         this.baseDesire = baseDesire;
+        if (traitModifiers != null) this.traitModifiers = traitModifiers;
+        else this.traitModifiers = new List<TraitModifier>();
     }
 
     public virtual void Enact(Character actor, Tile location, string target, List<ActionTargetDesire> potentialConsiderations)
@@ -23,7 +27,13 @@ public class Action
     {
         float currentDesire = baseDesire;
 
-        return Mathf.Max(currentDesire, 0);
+        foreach(TraitModifier tm in traitModifiers) {
+            if(actor.traitList.Exists( x=> x.id == tm.id )) {
+                currentDesire = ModifyDesire(currentDesire, tm.modifier);
+            }
+        }
+
+        return currentDesire;
 
     }
 
@@ -55,15 +65,30 @@ public class Action
         }
         return null;
     }
+
+    protected float ModifyDesire(float currentDesire, float modifier)
+    {
+        return currentDesire + (baseDesire * modifier);
+    }
 }
 
+public class TraitModifier {
+    public string id;
+    public float modifier;
+
+    public TraitModifier(string id, float modifier)
+    {
+        this.id = id;
+        this.modifier = modifier;
+    }
+}
 
 public class ActionSocial : Action {
     public float familyModifier;
     public float friendlyModifier;
     public float enemyModifier;
 
-    public ActionSocial(string name, float baseDesire=.2f, float familyModifier=1.5f, float friendlyModifier=2f, float enemyModifier=-.75f): base(name, baseDesire)
+    public ActionSocial(string name, float baseDesire=.2f, List<TraitModifier> traitModifiers = null, float familyModifier=1.5f, float friendlyModifier=2f, float enemyModifier=-.75f): base(name, baseDesire, traitModifiers)
     {
         this.name = name;
         this.baseDesire = baseDesire;
@@ -74,17 +99,17 @@ public class ActionSocial : Action {
 
     public override float Desire(Character actor, Tile location, string target)
     {
-        float currentDesire = baseDesire;
+        float currentDesire = base.Desire(actor, location, target);
 
         Character targetCharacter = FindInRoom(target, location);
 
         if (targetCharacter == null || targetCharacter == actor) return 0; //Action is not possible
 
-        if (Relation.AreFamily(actor, targetCharacter)) currentDesire += (currentDesire * familyModifier);
-        if (Relation.AreFriendly(actor, targetCharacter)) currentDesire += (currentDesire * friendlyModifier);
-        if (Relation.AreEnemy(actor, targetCharacter)) currentDesire += (currentDesire * enemyModifier);
+        if (Relation.AreFamily(actor, targetCharacter)) currentDesire = ModifyDesire(currentDesire, familyModifier);
+        if (Relation.AreFriendly(actor, targetCharacter)) currentDesire = ModifyDesire(currentDesire, friendlyModifier);
+        if (Relation.AreEnemy(actor, targetCharacter)) currentDesire = ModifyDesire(currentDesire, enemyModifier);
 
-        return Mathf.Max(currentDesire, 0);
+        return currentDesire;
 
     }
 
@@ -97,7 +122,7 @@ public class ActionSocial : Action {
 
 public class ActionMovement: Action {
 
-    public ActionMovement(string name, float baseDesire=.15f):base(name, baseDesire)
+    public ActionMovement(string name, float baseDesire=.15f, List<TraitModifier> traitModifiers = null) :base(name, baseDesire, traitModifiers)
     {
         this.name = name;
         this.baseDesire = baseDesire;
@@ -118,16 +143,15 @@ public class ActionMovement: Action {
         if (newLocation == null) return 0;
 
         //something that sees how much they might want to do that based on their traits
-        float currentDesire = DesireBFS(actor, newLocation);
+
+        float currentDesire = base.Desire(actor, location, target);
+        currentDesire = DesireBFS(actor, newLocation, currentDesire);
         
         return currentDesire;
     }
 
-    float DesireBFS(Character actor, Tile startLocation)
+    float DesireBFS(Character actor, Tile startLocation, float currentDesire)
     {
-        float currentDesire = baseDesire;
-        Debug.Log(currentDesire);
-
         List<Tile> toVisitQueue = new List<Tile> {startLocation};
         HashSet<int> visited = new HashSet<int> { startLocation.tileID };
 
@@ -140,7 +164,7 @@ public class ActionMovement: Action {
 
             Parent parInfo = parentLevelInfo[nextLocation];
 
-            currentDesire += (actor.PickBestActionAt(nextLocation, false).desire/ (parInfo.level*parInfo.siblings));
+            currentDesire += (actor.PickBestActionAt(nextLocation, false).desire/ (Mathf.Pow(parInfo.level, 2)*parInfo.siblings));
 
             foreach (Tile neighbor in nextLocation.connectedTiles) {
                 if (!visited.Contains(neighbor.tileID)) {

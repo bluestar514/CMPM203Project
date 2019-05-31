@@ -147,7 +147,7 @@ point:
 
 [System.Serializable]
 public class Tile {
-
+    public string name;
     //public List<Tile> subConnections = new List<Tile>();
     public int tileID = 0; // index 
     //string TitleType = "";
@@ -168,7 +168,9 @@ public class Tile {
     //maybe better make a dictionary of roomtype and string (discription) 
     public Tile(int _tileId)
     {
+        
         setroomInformation();
+        name = _tileId + "(" + roomType.ToString() + ")";
         this.tileID = _tileId;
         AddSocialActions();
         AddMovementActions();
@@ -176,7 +178,9 @@ public class Tile {
     public Tile(int _tileId, bool flag)
     {
         this.tileID = _tileId;
+        
         MakeTownCenter();
+        name = _tileId + "(" + roomType.ToString() + ")";
         AddSocialActions();
         AddMovementActions();
     }
@@ -185,6 +189,7 @@ public class Tile {
     {
         this.tileID = _tileId;
         MakeRoomOfType(roomType);
+        name = _tileId + "(" + roomType.ToString() + ")";
         AddSocialActions();
         AddMovementActions();
     }
@@ -359,7 +364,7 @@ public class Tile {
 
     private void AddSocialActions()
     {
-        availableActions.Add(new ActionSocial("chat"));
+        availableActions.Add(new ActionSocial("chat", traitModifiers: new List<TraitModifier> { new TraitModifier("kp0", 3), new TraitModifier("rp1", -3) }));
         availableActions.Add(new ActionSocial("hug", familyModifier: 3));
     }
     private void AddMovementActions()

@@ -138,8 +138,8 @@ public class TownGenerator
     public Character GenerateRandomCharacter()
     {
         Character character = new Character();
-        character.data.GenerateName();
-        character.name = character.data.name;
+        
+        character.name = NameGenerator.GenerateName();
         character.pc.GenerateRandomPhysicalCharacteristics();
 
         return character;
@@ -148,8 +148,7 @@ public class TownGenerator
     public Character GenerateChild(Character mother, Character father,int order)
     {
         Character character = new Character();
-        character.data.GenerateName();
-        character.name = character.data.name;
+        character.name = NameGenerator.GenerateName();
         character.pc.GenerateFromExisting(mother.pc, father.pc,order);
 
         character.AddRelation(mother, "mother");
@@ -169,7 +168,11 @@ public class TownGenerator
     public void AssignProfessions(List<Character> residents)
     {
         foreach(Character resident in residents) {
-            if(resident.profession == null) AssignProfessionTo(resident);
+            if (resident.profession == null) {
+                AssignProfessionTo(resident);
+                resident.traitList.AddRange(resident.profession.ChooseProfessionTraits());
+                resident.uniqueActions.AddRange(resident.profession.ChooseUniqueActions());
+            }
         }
     }
 

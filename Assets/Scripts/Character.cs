@@ -8,10 +8,11 @@ public class Character
 {
     public string name;
     public PhysicalCharactristics pc;
-    public Data data; // at this point read it from json 
     public List<Relation> relations;
     public Profession profession;
     public List<Memory> memoryLog;
+    public List<Trait> traitList;
+    public List<Action> uniqueActions;
 
     public Tile currentLocation;
 
@@ -19,10 +20,11 @@ public class Character
     {
         relations = new List<Relation>();
         pc = new PhysicalCharactristics();
-        data = new Data();
         profession = null;
         currentLocation = null;
         memoryLog = new List<Memory>();
+        traitList = new List<Trait>();
+        uniqueActions = new List<Action>();
     }
 
     
@@ -47,7 +49,7 @@ public class Character
     {
         
         PhysicalCharactristics p = new PhysicalCharactristics();
-        Debug.Log(data.name + "\n has eye: " + p.eyeColor + "" +
+        Debug.Log(name + "\n has eye: " + p.eyeColor + "" +
             "\n has hair color: " + p.hairColor +
             "\n height:  " + p.height +
             "\n and weight" + p.weight +
@@ -86,8 +88,12 @@ public class Character
 
     List<ActionTargetDesire> GetFullListOfActions(Tile location, bool mayMove = true)
     {
+        List<Action> locationAndUniqueActions = new List<Action>();
+        locationAndUniqueActions.AddRange(location.availableActions);
+        locationAndUniqueActions.AddRange(uniqueActions);
+
         List<ActionTargetDesire> potentialActions = new List<ActionTargetDesire>();
-        foreach (Action action in location.availableActions) {
+        foreach (Action action in locationAndUniqueActions) {
             string target = "";
             float desire = action.Desire(this, location, target) * Random.Range(.85f, 1.15f);
 
@@ -129,7 +135,7 @@ public class Character
 
     public ActionTargetDesire PickBestActionFrom(List<ActionTargetDesire> potentialActions)
     {
-        ActionTargetDesire bestAction = new ActionTargetDesire(null, "", -10000);
+        ActionTargetDesire bestAction = new ActionTargetDesire(new ActionMovement("loitter", 0), currentLocation.tileID.ToString(), 0); //must pick an action that they can do (in other words, is greater than 0)
         foreach (ActionTargetDesire choice in potentialActions) {
             if (bestAction.desire < choice.desire) bestAction = choice;
         }
@@ -183,14 +189,14 @@ public class Relation {
     public Relation(Character otherCharacter, string relationship, bool isitaCHILD)
     {
         this.otherCharacter = otherCharacter;
-        name = otherCharacter.data.name;
+        name = otherCharacter.name;
         this.relationship = relationship;
         this.isChild = isitaCHILD;
     }
     public Relation(Character otherCharacter, string relationship)
     {
         this.otherCharacter = otherCharacter;
-        name = otherCharacter.data.name;
+        name = otherCharacter.name;
         this.relationship = relationship;
        
     }
