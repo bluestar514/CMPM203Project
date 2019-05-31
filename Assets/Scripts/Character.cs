@@ -84,7 +84,7 @@ public class Character
         memoryLog.Add(new Memory(mainEntry, potentialConsiderations));
     }
 
-    List<ActionTargetDesire> GetFullListOfActions(Tile location)
+    List<ActionTargetDesire> GetFullListOfActions(Tile location, bool mayMove = true)
     {
         List<ActionTargetDesire> potentialActions = new List<ActionTargetDesire>();
         foreach (Action action in location.availableActions) {
@@ -101,7 +101,7 @@ public class Character
                 continue;
             }
             ActionMovement actionMovement = action as ActionMovement;
-            if (actionMovement != null) {
+            if (mayMove && actionMovement != null) {
                 foreach (Tile loc in location.connectedTiles) {
                     target = loc.tileID.ToString();
                     desire = actionMovement.Desire(this, location, target) * Random.Range(.85f, 1.15f);
@@ -121,17 +121,16 @@ public class Character
 
     public ActionTargetDesire PickBestActionAt(Tile location, bool mayMove = true)
     {
-        List<ActionTargetDesire> potentialActions = GetFullListOfActions(location);
+        List<ActionTargetDesire> potentialActions = GetFullListOfActions(location, mayMove);
 
-        return PickBestActionFrom(potentialActions, mayMove);
+        return PickBestActionFrom(potentialActions);
 
     }
 
-    public ActionTargetDesire PickBestActionFrom(List<ActionTargetDesire> potentialActions, bool mayMove = true)
+    public ActionTargetDesire PickBestActionFrom(List<ActionTargetDesire> potentialActions)
     {
         ActionTargetDesire bestAction = new ActionTargetDesire(null, "", -10000);
         foreach (ActionTargetDesire choice in potentialActions) {
-            if (!mayMove && choice.action is ActionMovement) continue;
             if (bestAction.desire < choice.desire) bestAction = choice;
         }
 

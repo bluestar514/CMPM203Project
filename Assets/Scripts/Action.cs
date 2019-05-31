@@ -118,7 +118,6 @@ public class ActionMovement: Action {
         if (newLocation == null) return 0;
 
         //something that sees how much they might want to do that based on their traits
-        Debug.Log("Finding Desire of moving to " + location.tileID);
         float currentDesire = DesireBFS(actor, newLocation);
         
         return currentDesire;
@@ -127,24 +126,27 @@ public class ActionMovement: Action {
     float DesireBFS(Character actor, Tile startLocation)
     {
         float currentDesire = baseDesire;
+        Debug.Log(currentDesire);
 
         List<Tile> toVisitQueue = new List<Tile> {startLocation};
         HashSet<int> visited = new HashSet<int> { startLocation.tileID };
 
         Dictionary<Tile, Parent> parentLevelInfo = new Dictionary<Tile, Parent>();
-        parentLevelInfo.Add(startLocation, new Parent(null, 0));
+        parentLevelInfo.Add(startLocation, new Parent(null, 1));
 
         while(toVisitQueue.Count > 0) {
             Tile nextLocation = toVisitQueue[0];
             toVisitQueue.RemoveAt(0);
 
-            //currentDesire += (actor.PickBestActionAt(nextLocation, false).desire/ parentLevelInfo[nextLocation].level);
+            Parent parInfo = parentLevelInfo[nextLocation];
 
-            foreach(Tile neighbor in nextLocation.connectedTiles) {
+            currentDesire += (actor.PickBestActionAt(nextLocation, false).desire/ (parInfo.level*parInfo.siblings));
+
+            foreach (Tile neighbor in nextLocation.connectedTiles) {
                 if (!visited.Contains(neighbor.tileID)) {
                     toVisitQueue.Add(neighbor);
                     visited.Add(neighbor.tileID);
-                    parentLevelInfo.Add(neighbor, new Parent(nextLocation, parentLevelInfo[nextLocation].level + 1));
+                    parentLevelInfo.Add(neighbor, new Parent(nextLocation, parInfo.level + 1));
                 }
             }
         }
@@ -162,11 +164,14 @@ public class ActionMovement: Action {
     class Parent {
         public Tile parent;
         public int level;
+        public int siblings;
 
         public Parent(Tile parent, int level)
         {
             this.parent = parent;
             this.level = level;
+            if (parent != null) this.siblings = parent.connectedTiles.Count;
+            else this.siblings = 1;
         }
     }
 }
