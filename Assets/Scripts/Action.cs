@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Action
 {
     public string name;
@@ -13,9 +14,9 @@ public class Action
         this.baseDesire = baseDesire;
     }
 
-    public virtual void Enact(Character actor, Tile location, string target)
+    public virtual void Enact(Character actor, Tile location, string target, List<ActionTargetDesire> potentialConsiderations)
     {
-        FormMemory(actor, location, target);
+        FormMemory(actor, location, target, potentialConsiderations);
     }
 
     public virtual float Desire(Character actor, Tile location, string target)
@@ -26,9 +27,9 @@ public class Action
 
     }
 
-    public virtual void FormMemory(Character actor, Tile location, string target)
+    public virtual void FormMemory(Character actor, Tile location, string target, List<ActionTargetDesire> potentialConsiderations)
     {
-        actor.AddMemory(name);
+        actor.AddMemory(name, potentialConsiderations);
     }
 
 
@@ -71,7 +72,6 @@ public class ActionSocial : Action {
         this.enemyModifier = enemyModifier;
     }
 
-
     public override float Desire(Character actor, Tile location, string target)
     {
         float currentDesire = baseDesire;
@@ -88,9 +88,9 @@ public class ActionSocial : Action {
 
     }
 
-    public override void FormMemory(Character actor, Tile location, string target)
+    public override void FormMemory(Character actor, Tile location, string target, List<ActionTargetDesire> potentialConsiderations)
     {
-        actor.AddMemory(name + " with " + target);
+        actor.AddMemory(name + " with " + target, potentialConsiderations);
     }
 
 }
@@ -103,9 +103,9 @@ public class ActionMovement: Action {
         this.baseDesire = baseDesire;
     }
 
-    public override void Enact(Character actor, Tile location, string target)
+    public override void Enact(Character actor, Tile location, string target, List<ActionTargetDesire> potentialConsiderations)
     {
-        base.Enact(actor, location, target);
+        base.Enact(actor, location, target, potentialConsiderations);
 
         Tile newLocation = FindConnection(target, location);
 
@@ -118,11 +118,55 @@ public class ActionMovement: Action {
         if (newLocation == null) return 0;
 
         //something that sees how much they might want to do that based on their traits
-
-        return baseDesire;
+        Debug.Log("Finding Desire of moving to " + location.tileID);
+        float currentDesire = DesireBFS(actor, newLocation);
+        
+        return currentDesire;
     }
-    public override void FormMemory(Character actor, Tile location, string target)
+
+    float DesireBFS(Character actor, Tile startLocation)
     {
-        actor.AddMemory("Moved to " + target);
+        float currentDesire = baseDesire;
+
+        List<Tile> toVisitQueue = new List<Tile> {startLocation};
+        HashSet<int> visited = new HashSet<int> { startLocation.tileID };
+
+        Dictionary<Tile, Parent> parentLevelInfo = new Dictionary<Tile, Parent>();
+        parentLevelInfo.Add(startLocation, new Parent(null, 0));
+
+        while(toVisitQueue.Count > 0) {
+            Tile nextLocation = toVisitQueue[0];
+            toVisitQueue.RemoveAt(0);
+
+            //currentDesire += (actor.PickBestActionAt(nextLocation, false).desire/ parentLevelInfo[nextLocation].level);
+
+            foreach(Tile neighbor in nextLocation.connectedTiles) {
+                if (!visited.Contains(neighbor.tileID)) {
+                    toVisitQueue.Add(neighbor);
+                    visited.Add(neighbor.tileID);
+                    parentLevelInfo.Add(neighbor, new Parent(nextLocation, parentLevelInfo[nextLocation].level + 1));
+                }
+            }
+        }
+
+        return currentDesire;
+    }
+    
+    public override void FormMemory(Character actor, Tile location, string target, List<ActionTargetDesire> potentialConsiderations)
+    {
+        actor.AddMemory("Moved to " + target, potentialConsiderations);
+    }
+
+
+
+    class Parent {
+        public Tile parent;
+        public int level;
+
+        public Parent(Tile parent, int level)
+        {
+            this.parent = parent;
+            this.level = level;
+        }
     }
 }

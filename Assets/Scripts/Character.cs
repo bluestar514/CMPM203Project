@@ -11,7 +11,7 @@ public class Character
     public Data data; // at this point read it from json 
     public List<Relation> relations;
     public Profession profession;
-    public List<string> memoryLog;
+    public List<Memory> memoryLog;
 
     public Tile currentLocation;
 
@@ -22,7 +22,7 @@ public class Character
         data = new Data();
         profession = null;
         currentLocation = null;
-        memoryLog = new List<string>();
+        memoryLog = new List<Memory>();
     }
 
     
@@ -79,12 +79,12 @@ public class Character
         return null;
     }
 
-    public void AddMemory(string memory)
+    public void AddMemory(string mainEntry, List<ActionTargetDesire> potentialConsiderations)
     {
-        memoryLog.Add(memory);
+        memoryLog.Add(new Memory(mainEntry, potentialConsiderations));
     }
 
-    ActionTargetDesire PickBestActionAt(Tile location)
+    List<ActionTargetDesire> GetFullListOfActions(Tile location)
     {
         List<ActionTargetDesire> potentialActions = new List<ActionTargetDesire>();
         foreach (Action action in location.availableActions) {
@@ -96,7 +96,6 @@ public class Character
                 foreach (Character character in location.GetAllVisitors()) {
                     target = character.name;
                     desire = actionSocial.Desire(this, location, target) * Random.Range(.85f, 1.15f); //add a little variation to base desire
-                    Debug.Log("1 "+action.name + " " + desire);
                     potentialActions.Add(new ActionTargetDesire(actionSocial, target, desire));
                 }
                 continue;
@@ -106,18 +105,33 @@ public class Character
                 foreach (Tile loc in location.connectedTiles) {
                     target = loc.tileID.ToString();
                     desire = actionMovement.Desire(this, location, target) * Random.Range(.85f, 1.15f);
-                    Debug.Log("2 " + action.name + " " + desire);
+
                     potentialActions.Add(new ActionTargetDesire(actionMovement, loc.tileID.ToString(), desire));
                 }
                 continue;
             }
 
-            Debug.Log("3 " + action.name + " " + desire);
             potentialActions.Add(new ActionTargetDesire(action, "", desire));
         }
 
+        return potentialActions;
+    }
+
+    
+
+    public ActionTargetDesire PickBestActionAt(Tile location, bool mayMove = true)
+    {
+        List<ActionTargetDesire> potentialActions = GetFullListOfActions(location);
+
+        return PickBestActionFrom(potentialActions, mayMove);
+
+    }
+
+    public ActionTargetDesire PickBestActionFrom(List<ActionTargetDesire> potentialActions, bool mayMove = true)
+    {
         ActionTargetDesire bestAction = new ActionTargetDesire(null, "", -10000);
         foreach (ActionTargetDesire choice in potentialActions) {
+            if (!mayMove && choice.action is ActionMovement) continue;
             if (bestAction.desire < choice.desire) bestAction = choice;
         }
 
@@ -127,9 +141,11 @@ public class Character
 
     public void TakeActionAt(Tile location)
     {
-        ActionTargetDesire bestAction = PickBestActionAt(location);
+        List<ActionTargetDesire> allActions = GetFullListOfActions(location);
 
-        bestAction.action.Enact(this, location, bestAction.target);
+        ActionTargetDesire bestAction = PickBestActionFrom(allActions);
+
+        bestAction.action.Enact(this, location, bestAction.target, allActions);
 
     }   
 
@@ -138,17 +154,22 @@ public class Character
         TakeActionAt(currentLocation);
     }
 
-    class ActionTargetDesire {
-        public Action action;
-        public string target;
-        public float desire;
+    
+}
 
-        public ActionTargetDesire(Action action, string target, float desire)
-        {
-            this.action = action;
-            this.target = target;
-            this.desire = desire;
-        }
+[System.Serializable]
+public class ActionTargetDesire {
+    public string name="null Action";
+    public Action action;
+    public string target;
+    public float desire;
+
+    public ActionTargetDesire(Action action, string target, float desire)
+    {
+        if(action != null) name = action.name + " "+ target + ": "+desire;
+        this.action = action;
+        this.target = target;
+        this.desire = desire;
     }
 }
 
