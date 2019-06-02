@@ -23,9 +23,7 @@ public class Town : MonoBehaviour
         famalies = townGenerator.GenerateFamalies(5, 2);//(100,25);//off by 1 or -1 
         townGenerator.AddRandomRelations(famalies);
         townGenerator.AssignProfessions(famalies);
-        //residents = townGenerator.GenerateResidents(10, 2);//copying this method for family structure for now commenting here 
-        //string json = JsonUtility.ToJson(famalies[0]);
-        //File.WriteAllText(Application.dataPath + "/save.txt", json);
+
         allCharecters = combineAllCharecters(famalies);
 
         map = new Map(15);

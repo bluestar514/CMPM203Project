@@ -91,7 +91,7 @@ public class MageProfession : Profession {
 
         uniqueActions = new List<Action> { new ActionSocial("Discuss the Nature of Magic", baseDesire: .2f, 
                                                             familyModifier: 1, friendlyModifier: 1, enemyModifier: 1, 
-                                                            traitModifiers: new List<TraitModifier> { new TraitModifier("mp2", 2) }) };
+                                                            traitModifiers: new List<ConditionModifier> { new ConditionModifier("mp2", modifier: 2) }) };
     }
 }
 
@@ -108,7 +108,7 @@ public class ShamanProfession : Profession {
 
         uniqueActions = new List<Action> { new ActionSocial("Discuss the Beauty of Nature", baseDesire: .2f,
                                                             familyModifier: 1, friendlyModifier: 1.5f, enemyModifier: 1,
-                                                            traitModifiers: new List<TraitModifier> { new TraitModifier("sp0", 2) }) };
+                                                            traitModifiers: new List<ConditionModifier> { new ConditionModifier("sp0", modifier: 2) }) };
     }
 }
 
@@ -126,7 +126,7 @@ public class KnightProfession : Profession {
 
         uniqueActions = new List<Action> { new ActionSocial("Boast of Heroism", baseDesire: .2f,
                                                             familyModifier: 1, friendlyModifier: 1.5f, enemyModifier: 2,
-                                                            traitModifiers: new List<TraitModifier> { new TraitModifier("kp0", 2) }) };
+                                                            traitModifiers: new List<ConditionModifier> { new ConditionModifier("kp0", modifier: 2) }) };
     }
 }
 
@@ -143,7 +143,7 @@ public class RogueProfession : Profession {
 
         uniqueActions = new List<Action> { new ActionSocial("Pickpocket", baseDesire: .2f,
                                                             familyModifier: -2, friendlyModifier: -1.5f, enemyModifier: 3,
-                                                            traitModifiers: new List<TraitModifier> { new TraitModifier("rp2", 3) }) };
+                                                            traitModifiers: new List<ConditionModifier> { new ConditionModifier("rp2", modifier: 3) }) };
     }
 }
 

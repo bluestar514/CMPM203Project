@@ -164,6 +164,8 @@ public class Tile {
     public List<Tile> connectedTiles = new List<Tile>();
 
     public List<Action> availableActions = new List<Action>();
+    public List<Trait> traitList = new List<Trait>();
+
 
     //maybe better make a dictionary of roomtype and string (discription) 
     public Tile(int _tileId)
@@ -287,6 +289,7 @@ public class Tile {
                     " at the town house",
                      " The group is at the town center",
                      "What a great town"   };
+        this.traitList.Add(new Trait("Homey", "t_h0", "Such a homey place."));
     }
 
     private void MakeCave()
@@ -314,6 +317,7 @@ public class Tile {
                     "so many books",
                      "book, books and more books in this room"
                 };
+        this.traitList.Add(new Trait("Studious", "t_l0", "Such a studious air to this place."));
     }
 
     private void MakeLowerLevel()
@@ -364,12 +368,12 @@ public class Tile {
 
     private void AddSocialActions()
     {
-        availableActions.Add(new ActionSocial("chat", traitModifiers: new List<TraitModifier> { new TraitModifier("kp0", 3), new TraitModifier("rp1", -3) }));
+        availableActions.Add(new ActionSocial("chat", traitModifiers: new List<ConditionModifier> { new ConditionModifier("kp0", modifier: 3), new ConditionModifier("rp1", modifier: -3) }));
         availableActions.Add(new ActionSocial("hug", familyModifier: 3));
     }
     private void AddMovementActions()
     {
-        availableActions.Add(new ActionMovement("move"));
+        availableActions.Add(new ActionMovement("move", traitModifiers: new List<ConditionModifier> { new ConditionModifier("mp1", "t_l0", 3) }));
     }
 
     public void AddCharacterToTile(Character character, bool isParty)
